@@ -1,4 +1,6 @@
 <?php 
+session_start();
+$session_id = $_SESSION['authenticated_user_id'];
 include"config/db-connection.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -25,6 +27,11 @@ if (!isset($_POST["sticker_sender"]) && !isset($_POST["sticker_receiver"])) {
 $sender = filter_var(trim($_POST["sticker_sender"]), FILTER_SANITIZE_EMAIL);
 $receiver = filter_var(trim($_POST["sticker_receiver"]), FILTER_SANITIZE_STRING);
 
+if($session_id == $sender){
+  $class = 'replies';
+}else{
+  $class = 'sent';
+}
 
 $sql = "SELECT sticker, sent_by, message, link, media FROM `messages` WHERE `sent_by` = '$sender' AND `sent_to` = '$receiver' AND status=0 order by msg_id asc ";
 //$sentMail = true;
@@ -39,7 +46,7 @@ foreach($stickers as $row){
 	// foreach($users as $user){
     if($row['sticker'] != ''){
     	$list .= '
-    		<li class="replies"> 
+    		<li class="'.$class.'"> 
              	<div class="media"> 
              		<div class="profile mr-4 bg-size" style="background-image: url("../assets/images/contact/1.jpg"); background-size: cover; background-position: center center;">
              		</div>
@@ -57,7 +64,7 @@ foreach($stickers as $row){
     	';
     }else if($row['message'] != '' && $row['message'] != 'Null'){
         $list .= '
-        <li class="replies">
+        <li class="'.$class.'">
            <div class="media">
               <div class="profile mr-4 bg-size" style="background-image: url(&quot;assets/images/avtar/1.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="assets/images/avtar/1.jpg" alt="Avatar" style="display: none;"></div>
               <div class="media-body">
@@ -98,7 +105,7 @@ foreach($stickers as $row){
         ';
     }else if($row['media'] != ''){
         $list .= '
-        <li class="sent">
+        <li class="'.$class.'">
            <div class="media">
               <div class="profile mr-4 bg-size" style="background-image: url(&quot;assets/images/avtar/1.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="assets/images/avtar/1.jpg" alt="Avatar" style="display: none;"></div>
               <div class="media-body">
@@ -144,7 +151,7 @@ foreach($stickers as $row){
         ';
     }else if($row['link'] != ''){
         $list .= '
-        <li class="replies">
+        <li class="'.$class.'">
            <div class="media">
               <div class="profile mr-4 bg-size" style="background-image: url(&quot;assets/images/avtar/1.jpg&quot;); background-size: cover; background-position: center center; display: block;"><img class="bg-img" src="assets/images/avtar/1.jpg" alt="Avatar" style="display: none;"></div>
               <div class="media-body">

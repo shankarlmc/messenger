@@ -8,14 +8,14 @@ $dbname = "messenger";
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 if (!$conn) {
-	$output = json_encode(
+	$output__ = json_encode(
         array(
             'type' => 'error',
             'text' => 'Connection failed:'. mysqli_connect_error(). '!'
 	));
-    die($output);
+    die($output__);
 }else{
-	$output = json_encode(
+	$output__ = json_encode(
         array(
             'type' => 'success',
             'text' => 'successfully connected!'
